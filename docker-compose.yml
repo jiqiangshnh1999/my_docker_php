@@ -33,7 +33,7 @@ services:
   #     - "3306:3306"
   #   volumes:
   #     - ./conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-  #     - ./data/mysql:/var/lib/mysql/:rw
+  #     - /Volumes/Recovery/data/mysql:/var/lib/mysql/:rw
   #   restart: always
   #   networks:
   #     - default
@@ -47,11 +47,9 @@ services:
   #   environment:
   #     POSTGRES_PASSWORD: 123
   #     POSTGRES_USER: postgres
-  #     # PGDATA: /var/lib/postgresql/data/pgdata
-  #     # POSTGRES_DB: db
-  #     # PGDATA: /tmp
+  #     PGDATA: /var/lib/postgresql/data/pgdata
   #   volumes:
-  #     - gitlab-postgresql-volume:/var/lib/postgresql:Z
+  #     - /Volumes/Recovery/data/postgresql:/var/lib/postgresql:rw
 
   redis:
     image: redis:alpine

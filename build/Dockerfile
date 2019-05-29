@@ -114,6 +114,7 @@ RUN set -xe \
 		libxml2-dev \
 		openssl-dev \
 		sqlite-dev \
+		bash \
 	\
 	&& export CFLAGS="$PHP_CFLAGS" \
 		CPPFLAGS="$PHP_CPPFLAGS" \
@@ -161,12 +162,12 @@ RUN set -xe \
 	&& make clean \
 	&& cp -v php.ini-* "$PHP_INI_DIR/" \
 	\
-	# && git clone --depth=1 git://github.com/dreamsxin/cphalcon7.git \
-	# && cd cphalcon7/ext \
-	# && phpize \
-	# && ./configure \
-	# && make && make install \
-	# && make clean \
+	&& git clone --depth=1 git://github.com/dreamsxin/cphalcon7.git \
+	&& cd cphalcon7/ext \
+	&& phpize \
+	&& /bin/bash ./configure \
+	&& make && make install \
+	&& make clean \
 	\
 # https://github.com/docker-library/php/issues/692 (copy default example "php.ini" files somewhere easily discoverable)
 	&&pecl install redis-4.3.0 \
@@ -175,6 +176,7 @@ RUN set -xe \
 	&& pecl install yaf-3.0.8 \
 	\
 	&& cd / \
+	&& rm -rf cphalcon7 \
 	&& docker-php-source delete \
 	\
 	&& runDeps="$( \
@@ -191,7 +193,7 @@ RUN set -xe \
 	&& pecl update-channels \
 	&& rm -rf /tmp/pear ~/.pearrc
 COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
-RUN docker-php-ext-enable redis xdebug swoole sodium yaf
+RUN docker-php-ext-enable redis xdebug swoole sodium yaf phalcon
 # sodium was built as a shared module (so that it can be replaced later if so desired), so let's enable it too (https://github.com/docker-library/php/issues/598)
 
 ENTRYPOINT ["docker-php-entrypoint"]
