@@ -137,6 +137,8 @@ RUN set -xe \
 		--enable-ftp \
 # --enable-mbstring is included here because otherwise there's no way to get pecl to use it properly (see https://github.com/docker-library/php/issues/195)
 		--enable-mbstring \
+		--enable-pcntl \
+		--enable-posix \
 # --enable-mysqlnd is included here because it's harder to compile after the fact than extensions are (since it's a plugin for several extensions, not an extension in itself)
 		--enable-mysqlnd \
 # https://wiki.php.net/rfc/argon2_password_hash (7.2+)
@@ -170,10 +172,11 @@ RUN set -xe \
 	&& make clean \
 	\
 # https://github.com/docker-library/php/issues/692 (copy default example "php.ini" files somewhere easily discoverable)
-	&&pecl install redis-4.3.0 \
+	&& pecl install redis-4.3.0 \
     && pecl install xdebug-2.7.2 \
 	&& pecl install swoole-4.3.4 \
 	&& pecl install yaf-3.0.8 \
+	&& pecl install mongodb-1.5.3 \
 	\
 	&& cd / \
 	&& rm -rf cphalcon7 \
@@ -193,7 +196,7 @@ RUN set -xe \
 	&& pecl update-channels \
 	&& rm -rf /tmp/pear ~/.pearrc
 COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
-RUN docker-php-ext-enable redis xdebug swoole sodium yaf phalcon
+RUN docker-php-ext-enable redis xdebug swoole sodium yaf phalcon mongodb
 # sodium was built as a shared module (so that it can be replaced later if so desired), so let's enable it too (https://github.com/docker-library/php/issues/598)
 
 ENTRYPOINT ["docker-php-entrypoint"]
